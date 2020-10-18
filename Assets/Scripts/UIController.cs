@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
     public TextMeshProUGUI m_CurrentTime;
     public TextMeshProUGUI m_NotCorrectPath;
     public TextMeshProUGUI m_CurrentLap;
+    public TextMeshProUGUI m_bestTimeEver;
     public TextMeshProUGUI m_Lap1Time;
     public TextMeshProUGUI m_Lap2Time;
     public TextMeshProUGUI m_Lap3Time;
+    public TextMeshProUGUI m_finishedRace;
 
     private int m_MaxLaps;
     private float m_time;
@@ -22,6 +25,7 @@ public class UIController : MonoBehaviour
     {
         m_NotBlinkingTime = true;
         m_NotCorrectPath.gameObject.SetActive(false);
+        m_finishedRace.gameObject.SetActive(false);
         m_Lap1Time.gameObject.SetActive(false);
         m_Lap2Time.gameObject.SetActive(false);
         m_Lap3Time.gameObject.SetActive(false);
@@ -101,5 +105,46 @@ public class UIController : MonoBehaviour
     public float GetCurrentTimer()
     {
         return m_time;
+    }
+
+    public void SetBestTime(float bestTime)
+    {
+        if(bestTime != 0)
+        {
+            m_bestTimeEver.text = "Best Time: "+bestTime.ToString("f3") + " s";
+            m_bestTimeEver.gameObject.SetActive(true);
+        }
+        else m_bestTimeEver.gameObject.SetActive(false);
+    }
+
+    public void DesactivateCurrentLapInfo()
+    {
+        m_CurrentLap.gameObject.SetActive(false);
+        m_CurrentTime.gameObject.SetActive(false);
+    }
+
+    public void ShowFinishedRace()
+    {
+        m_finishedRace.gameObject.SetActive(true);
+    }
+
+    public void WatchWithNormalCam()
+    {
+        GetComponent<GameController>().SetNormalCam();
+    }
+
+    public void WatchWithCinematicCam()
+    {
+        GetComponent<GameController>().SetCinematicCam();
+    }
+
+    public void RestartRace()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene("MenuScene");
     }
 }

@@ -35,14 +35,17 @@ public class CarColliderController : MonoBehaviour
             wheelPos = new Vector3(wheelPos.x, wheelPos.y + 0.5f, wheelPos.z);
             RaycastHit[] hits;
             hits = Physics.RaycastAll(wheelPos, -Vector3.up, 10.0F);
-            if (hits[1].collider.tag == "TrackCollider")
+            if(hits.Length >= 2)
             {
-                m_Wheels[i].transform.GetChild(0).gameObject.SetActive(false);
-            }
-            else
-            {
-                isInTrack = false;
-                m_Wheels[i].transform.GetChild(0).gameObject.SetActive(true);
+                if (hits[1].collider.tag == "TrackCollider")
+                {
+                    m_Wheels[i].transform.GetChild(0).gameObject.SetActive(false);
+                }
+                else
+                {
+                    isInTrack = false;
+                    m_Wheels[i].transform.GetChild(0).gameObject.SetActive(true);
+                }
             }
         }
         m_IsInTrack = isInTrack;

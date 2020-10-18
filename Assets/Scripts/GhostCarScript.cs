@@ -13,8 +13,9 @@ public class GhostCarScript : ScriptableObject
     List<Vector3> ghostCarPositions = new List<Vector3>();
     List<Quaternion> ghostCarRotations = new List<Quaternion>();
 
-    private string path = "Assets/Resources/GhostBestLap.txt";
     private float m_frequencyGhostSamples;
+    private int m_mapSelected;
+    private int m_carSelected;
 
     public void AddNewData(Transform transform)
     {
@@ -36,7 +37,11 @@ public class GhostCarScript : ScriptableObject
 
     public void WriteGhostCarTXT(float frequencySamples)
     {
+        string path = "Assets/Resources/GhostBestLap"+PlayerPrefs.GetInt("MapSelected", 0)+".txt";
         StreamWriter writer = new StreamWriter(path, false);
+        writer.WriteLine(PlayerPrefs.GetInt("MapSelected", 0).ToString());
+        writer.WriteLine(PlayerPrefs.GetInt("CarSelected", 0).ToString());
+
         writer.WriteLine(carPositions.Count.ToString());
         writer.WriteLine(frequencySamples.ToString());
         for (int i = 0; i < carPositions.Count; i++) {
@@ -51,13 +56,19 @@ public class GhostCarScript : ScriptableObject
     {
         try
         {
+            string path = "Assets/Resources/GhostBestLap" + PlayerPrefs.GetInt("MapSelected", 0) + ".txt";
             StreamReader reader = new StreamReader(path);
+            m_mapSelected = int.Parse(reader.ReadLine());
+            m_carSelected = int.Parse(reader.ReadLine());
+
             var numOfSamples = reader.ReadLine();
 
             string freq = reader.ReadLine();
             var freqStr = freq.Replace(".", ",");
             float.TryParse(freqStr, out m_frequencyGhostSamples);
 
+            ghostCarPositions.Clear();
+            ghostCarRotations.Clear();
             for (int i = 0; i < int.Parse(numOfSamples); i++)
             {
                 var line = reader.ReadLine();
@@ -105,18 +116,8 @@ public class GhostCarScript : ScriptableObject
 
     public bool CheckGhostCarData()
     {
-        bool canReadData = true;
-        try
-        {
-            StreamReader reader = new StreamReader(path);
-            reader.ReadLine();
-            canReadData = true;
-        }
-        catch
-        {
-            canReadData = false;
-        }
-        return canReadData;
+        string path = "Assets/Resources/GhostBestLap" + PlayerPrefs.GetInt("MapSelected", 0) + ".txt";
+        return File.Exists(path);
     }
 
     public int GetNumGhostSamples()
@@ -127,5 +128,15 @@ public class GhostCarScript : ScriptableObject
     public float GetGhostFrequencySamples()
     {
         return m_frequencyGhostSamples;
+    }
+
+    public int GetGhostMap()
+    {
+        return m_mapSelected;
+    }
+
+    public int GetGhostCar()
+    {
+        return m_carSelected;
     }
 }
